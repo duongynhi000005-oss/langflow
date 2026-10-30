@@ -565,6 +565,8 @@ async def _generate_flow_events(
         # Resume skips the initial run's trace setup (trace_context_var stays unset → post-pause
         # vertices like Chat Output never trace); re-init so the resumed vertices trace.
         graph.flow_name = graph.flow_name or flow_name
+        if tweaks:
+            process_tweaks_on_graph(graph, tweaks)
         await graph.initialize_run()
         pending = await get_job_service().get_pending_human_request(job_id)
         decision = reroute_decision_on_timeout(pending, resume["decision"])
